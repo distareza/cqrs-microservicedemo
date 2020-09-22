@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TextUtil {
 
 	public static void printJson(Object jsonObject) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-		System.out.println( mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject) );		
+		System.out.println( toJsonText(jsonObject) );		
 	}
 	
+	public static String toJsonText(Object jsonObject) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+	}
 }
