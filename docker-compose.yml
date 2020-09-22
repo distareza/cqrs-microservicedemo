@@ -1,0 +1,57 @@
+version: "3.7"
+
+services:
+   oracle-12c:
+      container_name: oracle-12c
+      image: store/oracle/database-enterprise:12.2.0.1
+      ports:
+         - 1521:1521
+      environment:
+         - DB_SID=REZA_DB
+         - DB_PDB=REZA_PDB
+         - DB_DOMAIN=localdomain
+      volumes:
+         - /var/oracle-db-data:/ORCL
+      networks:
+         - mynetwork
+         
+   javacustomapp:
+      container_name: javacustomapp
+      image: javacustomapp:0.1
+      ports:
+         - 8080:8080
+      depends_on:
+         - oracle-12c
+      environment:
+         - ORACLE_HOST=oracle-12c
+         - ORACLE_PORT=1521
+         - ORACLE_SID=REZA_DB
+         - DB_USER=test
+         - DB_PASS=test
+      networks:
+         - mynetwork
+ 
+   solr_one:
+      container_name: solr_one
+      image: solr:8.6
+      ports:
+         - 8983:8983
+         - 9983:9983
+      command: -c
+      networks:
+         - mynetwork
+   solr_two:
+      container_name: solr_two
+      image: solr:8.6
+      ports:
+        - 8984:8983
+      command: -z solr_one:9983
+      networks:
+        - mynetwork
+      depends_on:
+        - solr_one
+
+networks:
+   mynetwork:
+      name: mycustomnetwork
+      
